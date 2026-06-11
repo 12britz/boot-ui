@@ -12,6 +12,7 @@ export function formatTime(epochNanos) {
 }
 
 export function formatClockTime(epochMillis) {
+  if (epochMillis == null) return '—'
   return new Date(epochMillis).toLocaleTimeString([], {
     hour12: false,
     hour: '2-digit',

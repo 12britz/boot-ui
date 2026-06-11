@@ -10,7 +10,11 @@ export async function apiFetch(input, init = {}) {
     if (!headers.has('X-XSRF-TOKEN')) {
       let token = csrfToken()
       if (!token) {
-        await fetch('api/overview', {cache: 'no-store'})
+        try {
+          await fetch('api/overview', {cache: 'no-store'})
+        } catch {
+          // network unavailable — continue without token
+        }
         token = csrfToken()
       }
       if (token) {

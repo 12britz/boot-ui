@@ -219,7 +219,8 @@ public class LiquibaseController {
                 } catch (LiquibaseException ex) {
                     log.debug("Could not close Liquibase after reading pending change sets.", ex);
                 }
-            } else if (connection != null) {
+            }
+            if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {

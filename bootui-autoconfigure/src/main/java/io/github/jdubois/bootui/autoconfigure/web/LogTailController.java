@@ -50,16 +50,6 @@ public class LogTailController {
         emitter.onTimeout(() -> cleanup(emitter, unsubscribeRef.get()));
         emitter.onError(error -> cleanup(emitter, unsubscribeRef.get()));
 
-        try {
-            for (BootUiLogAppender.LogLineDto line : appender.getRecentLines()) {
-                sendLog(emitter, toDto(line));
-            }
-        } catch (IOException ex) {
-            cleanup(emitter, unsubscribeRef.get());
-            emitter.completeWithError(ex);
-            return emitter;
-        }
-
         Runnable unsubscribe = appender.subscribe(line -> {
             try {
                 sendLog(emitter, toDto(line));
@@ -69,6 +59,16 @@ public class LogTailController {
             }
         });
         unsubscribeRef.set(unsubscribe);
+
+        try {
+            for (BootUiLogAppender.LogLineDto line : appender.getRecentLines()) {
+                sendLog(emitter, toDto(line));
+            }
+        } catch (IOException ex) {
+            cleanup(emitter, unsubscribeRef.get());
+            emitter.completeWithError(ex);
+            return emitter;
+        }
 
         return emitter;
     }
